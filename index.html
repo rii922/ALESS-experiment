@@ -14,15 +14,32 @@
 	<body>
 		<div id="wrapper">
 			<div id="title">ALESS 色覚テスト</div>
-			<div id="start">開始</div>
+			<div id="touch_instruction">画面をタッチしてください</div>
+			<div id="matching_instruction">2つの正方形をなるべく正確に同じ色にしてください。</div>
+			<div id="start_matching">色マッチングテストを開始</div>
+			<div id="memorizing_instruction">カウントダウンの後に表示される色を記憶し、なるべく正確に再現してください。</div>
+			<div id="start_memorizing">色暗記テストを開始</div>
 			<div id="countdown"></div>
 			<div id="color_shown" class="color-square"></div>
-			<div id="color_wheel"></div>
 			<div id="color_answered" class="color-square"></div>
+			<div id="color_wheel"></div>
 			<div id="next">次の問題へ</div>
 			<div id="end">結果を見る</div>
 			<div id="result">
-				<table>
+				<table id="matching_result">
+					<caption>色マッチングテスト</caption>
+					<thead>
+						<tr>
+							<th>問題ID</th>
+							<th>表示された色</th>
+							<th>答えた色</th>
+							<th>色差(CIELAB)</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<table id="memorizing_result">
+					<caption>色暗記テスト</caption>
 					<thead>
 						<tr>
 							<th>問題ID</th>

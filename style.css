@@ -78,14 +78,32 @@ html, body {
 	font-weight: bold;
 	text-align: center;
 }
-#start {
+#touch_instruction {
 	position: absolute;
 	top: 70%;
 	left: 50%;
 	transform: translateX(-50%);
+	font-size: 2rem;
+	text-align: center;
+}
+#matching_instruction, #memorizing_instruction {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 3rem;
+	text-align: center;
+	line-height: 2;
+}
+#start_matching, #start_memorizing {
+	position: absolute;
+	top: 70%;
+	left: 50%;
+	transform: translateX(-50%);
+	cursor: pointer;
 	font-size: 4rem;
 	color: #ffffff;
-	background-color: #66cdaa;
+	background-color: #333333;
 	border-radius: 10px;
 	padding: 15px 30px;
 }
@@ -96,7 +114,7 @@ html, body {
 	transform: translate(-50%, -50%);
 	font-size: 10rem;
 	font-weight: bold;
-	color: #66cdaa;
+	color: #333333;
 }
 .color-square {
 	width: 200px;
@@ -104,20 +122,14 @@ html, body {
 }
 #color_shown {
 	position: absolute;
-	top: 50%;
-	left: 50%;
 	transform: translate(-50%, -50%);
 }
 #color_wheel {
 	position: absolute;
 	top: 70%;
-	left: 30%;
+	left: 50%;
 	transform: translate(-50%, -50%);
 }
-/*#color_wheel .reinvented-color-wheel--sv-space,
-#color_wheel .reinvented-color-wheel--sv-handle {
-	display: none;
-}*/
 #color_answered {
 	position: absolute;
 	top: 20%;
@@ -129,12 +141,17 @@ html, body {
 	top: 70%;
 	left: 80%;
 	transform: translate(-50%, -50%);
+	cursor: pointer;
 	width: 260px;
 	font-size: 4rem;
 	color: #ffffff;
-	background-color: #66cdaa;
+	background-color: #333333;
 	border-radius: 10px;
 	padding: 15px 30px;
+}
+#start_matching:active, #start_memorizing:active,
+#next:active, #end:active {
+	background-color: #888888;
 }
 #result {
 	width: 100%;
@@ -145,8 +162,17 @@ html, body {
 	font-size: 3rem;
 	margin: 0 auto;
 }
+#result table:not(:last-child) {
+	margin-bottom: 50px;
+}
+#result table caption {
+	font-size: 4rem;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
 #result table thead {
 	border-bottom: 5px double #333333;
+	background-color: #cccccc;
 }
 #result table tbody tr:not(:last-child) {
 	border-bottom: 1px solid #333333;
