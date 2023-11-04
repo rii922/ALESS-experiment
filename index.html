@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>ALESS 色覚テスト</title>
+		<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="reinvented-color-wheel.min.css">
+		<script src="jquery-3.7.1.min.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="color.js"></script>
+		<script type="text/javascript" src="experiment.js"></script>
+		<script type="text/javascript" src="lch-color-wheel.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="title">ALESS 色覚テスト</div>
+			<div id="start">開始</div>
+			<div id="countdown"></div>
+			<div id="color_shown" class="color-square"></div>
+			<div id="color_wheel"></div>
+			<div id="color_answered" class="color-square"></div>
+			<div id="next">次の問題へ</div>
+			<div id="end">結果を見る</div>
+			<div id="result">
+				<table>
+					<thead>
+						<tr>
+							<th>問題ID</th>
+							<th>表示された色</th>
+							<th>答えた色</th>
+							<th>色差(CIELAB)</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
