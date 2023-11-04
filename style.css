@@ -51,7 +51,7 @@ table {
 
 @font-face {
 	font-family: "Noto Sans JP";
-	src: url("Noto_sans_JP/NotoSansJP-VariableFont_wght.ttf") format("truetype");
+	src: url("Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf") format("truetype");
 }
 * {
 	box-sizing: border-box;
