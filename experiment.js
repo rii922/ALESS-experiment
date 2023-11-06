@@ -1,4 +1,5 @@
 var colorWheel;
+var participantNo;
 var questionNo;
 var matchingQuestions;
 var memorizingQuestions;
@@ -17,11 +18,11 @@ function disturbColorWheel() {
 	colorWheel.lch = [
 		colorWheel.lch[0],
 		colorWheel.lch[1],
-		(colorWheel.lch[2]+randomRange(120, 240)+360)%360
+		colorWheel.lch[2]+randomRange(120, 240)
 	];
 }
 function init() {
-	$("#matching_instruction, #start_matching, #memorizing_instruction, #start_memorizing, #countdown, #color_shown, #color_wheel, #color_answered, #next, #end, #result").hide();
+	$("#start, #matching_instruction, #start_matching, #memorizing_instruction, #start_memorizing, #countdown, #question_no, #color_shown, #color_wheel, #color_answered, #next, #end, #result").hide();
 	colorWheel = new LchColorWheel({
 		appendTo: document.getElementById("color_wheel"),
 		wheelDiameter: WHEEL_DIAMETER,
@@ -32,11 +33,9 @@ function init() {
 			$("#color_answered").css("backgroundColor", rgb2bgColor(color.rgb));
 		}
 	});
-	matchingQuestions = QUESTION_COLORS_LCH.slice(0, TOTAL_MATCHING_TRIALS);
-	memorizingQuestions = QUESTION_COLORS_LCH.slice(-TOTAL_MEMORIZING_TRIALS);
-	var tr =
+	var trMatching =
 	`<tr>
-		<td class="id"></td>
+		<td class="question-no"></td>
 		<td class="color-shown">
 			<div class="color-square"></div>
 			<ul class="lch"></ul>
@@ -48,22 +47,65 @@ function init() {
 		<td class="difference"></td>
 	</tr>`;
 	for (var i = 0; i < TOTAL_MATCHING_TRIALS; i++) {
-		$("#matching_result tbody").append(tr);
+		$("#matching_result tbody").append(trMatching);
 	}
+	var trMemorizing =
+	`<tr>
+		<td class="question-no"></td>
+		<td class="duration"></td>
+		<td class="color-shown">
+			<div class="color-square"></div>
+			<ul class="lch"></ul>
+		</td>
+		<td class="color-answered">
+			<div class="color-square"></div>
+			<ul class="lch"></ul>
+		</td>
+		<td class="difference"></td>
+	</tr>`;
 	for (var i = 0; i < TOTAL_MEMORIZING_TRIALS; i++) {
-		$("#memorizing_result tbody").append(tr);
+		$("#memorizing_result tbody").append(trMemorizing);
 	}
-	$("#title, #touch_instruction").show();
-	$("#wrapper").on("click", function() {
-		$(this).off();
-		$("#title").fadeOut(DURATION, prepareMatching);
-		$("#touch_instruction").fadeOut(DURATION);
+	var trCompact =
+	`<tr>
+		<td class="question-no"></td>
+		<td class="duration"></td>
+		<td class="color-shown"></td>
+		<td class="color-answered"></td>
+		<td class="difference"></td>
+	</tr>`;
+	for (var i = 0; i < TOTAL_TRIALS; i++) {
+		$("#compact_result tbody").append(trCompact);
+		$("#participant_no").append(`<option value="${i}">${i}</option>`);
+	}
+	$("#participant_no").change(function() {
+		if ($(this).val() !== "") {
+			participantNo = Number($(this).val());
+			var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
+			console.log(questionColorsLchRotated.length);
+			matchingQuestions = shuffle(questionColorsLchRotated.slice(0, TOTAL_MATCHING_TRIALS));
+			memorizingQuestions = [];
+			for (var i = 0; i < TOTAL_MEMORIZING_TRIALS; i++) {
+				memorizingQuestions.push({
+					lch: questionColorsLchRotated[TOTAL_MATCHING_TRIALS+i],
+					duration: MEMORIZING_DURATIONS[i]
+				});
+			}
+			shuffle(memorizingQuestions);
+			$("#participant_no_result").text(`被験者番号: ${participantNo}`);
+			$("#start").fadeIn(DURATION).on("click", function() {
+				$(this).off();
+				$("#title").fadeOut(DURATION, prepareMatching);
+				$("#participant_no_form, #start").fadeOut(DURATION);
+			});
+		}
 	});
+	$("#title, #participant_no_form").show();
 }
 function prepareMatching() {
 	questionNo = 0;
 	$("#color_shown").css({
-		top: "20%",
+		top: "30%",
 		left: "20%"
 	});
 	$("#start_matching").on("click", function() {
@@ -73,16 +115,21 @@ function prepareMatching() {
 	$("#matching_instruction").fadeIn(DURATION);
 }
 function showMatching() {
+	$("#question_no").text(`第${questionNo+1}問(全${TOTAL_MATCHING_TRIALS}問)`);
 	colorWheel.lch = matchingQuestions[questionNo];
 	$("#color_shown").css("backgroundColor", rgb2bgColor(colorWheel.rgb));
 	var $tr = $("#matching_result tbody tr").eq(questionNo);
-	$tr.find(".id").text(questionNo);
+	$tr.find(".question-no").text(`第${questionNo+1}問`);
 	$tr.find(".color-shown .color-square").css("backgroundColor", rgb2bgColor(colorWheel.rgb));
 	var li =
 	`<li>L: ${matchingQuestions[questionNo][0].toFixed(DIGITS)}</li>
 	<li>C: ${matchingQuestions[questionNo][1].toFixed(DIGITS)}</li>
 	<li>h: ${matchingQuestions[questionNo][2].toFixed(DIGITS)}</li>`;
 	$tr.find(".color-shown .lch").append(li);
+	var $trCompact = $("#compact_result tbody tr").eq(questionNo);
+	$trCompact.find(".question-no").text(`Match ${questionNo+1}`);
+	$trCompact.find(".duration").text("--");
+	$trCompact.find(".color-shown").text(matchingQuestions[questionNo][2].toFixed(DIGITS));
 	disturbColorWheel();
 	$("#next").on("click", function() {
 		$(this).off().fadeOut(DURATION, function() {
@@ -99,10 +146,13 @@ function showMatching() {
 		<li>C: ${colorWheel.lch[1].toFixed(DIGITS)}</li>
 		<li>h: ${colorWheel.lch[2].toFixed(DIGITS)}</li>`;
 		$tr.find(".color-answered .lch").append(li);
-		$tr.find(".difference").text(colorDiff4lch(matchingQuestions[questionNo], colorWheel.lch).toFixed(DIGITS));
-		$("#color_shown, #color_answered, #color_wheel").fadeOut(DURATION);
+		var difference = colorDiff4lch(matchingQuestions[questionNo], colorWheel.lch).toFixed(DIGITS);
+		$tr.find(".difference").text(difference);
+		$trCompact.find(".color-answered").text(colorWheel.lch[2].toFixed(DIGITS));
+		$trCompact.find(".difference").text(difference);
+		$("#question_no, #color_shown, #color_answered, #color_wheel").fadeOut(DURATION);
 	});
-	$("#color_shown, #color_answered, #color_wheel, #next").fadeIn(DURATION);
+	$("#question_no, #color_shown, #color_answered, #color_wheel, #next").fadeIn(DURATION);
 }
 function prepareMemorizing() {
 	questionNo = 0;
@@ -117,6 +167,7 @@ function prepareMemorizing() {
 	$("#memorizing_instruction").fadeIn(DURATION);
 }
 async function countdown() {
+	$("#question_no").text(`第${questionNo+1}問(全${TOTAL_MEMORIZING_TRIALS}問)`).stop(false, true).show();
 	$countdown = $("#countdown");
 	$countdown.show();
 	for (var cnt = 3; cnt >= 1; cnt--) {
@@ -130,21 +181,26 @@ async function countdown() {
 }
 function showColor() {
 	$colorShown = $("#color_shown");
-	colorWheel.lch = memorizingQuestions[questionNo];
+	colorWheel.lch = memorizingQuestions[questionNo].lch;
 	var $tr = $("#memorizing_result tbody tr").eq(questionNo);
-	$tr.find(".id").text(questionNo);
+	$tr.find(".question-no").text(`第${questionNo+1}問`);
+	$tr.find(".duration").text(`${memorizingQuestions[questionNo].duration}ms`);
 	$tr.find(".color-shown .color-square").css("backgroundColor", rgb2bgColor(colorWheel.rgb));
 	var li =
-	`<li>L: ${memorizingQuestions[questionNo][0].toFixed(DIGITS)}</li>
-	<li>C: ${memorizingQuestions[questionNo][1].toFixed(DIGITS)}</li>
-	<li>h: ${memorizingQuestions[questionNo][2].toFixed(DIGITS)}</li>`;
+	`<li>L: ${memorizingQuestions[questionNo].lch[0].toFixed(DIGITS)}</li>
+	<li>C: ${memorizingQuestions[questionNo].lch[1].toFixed(DIGITS)}</li>
+	<li>h: ${memorizingQuestions[questionNo].lch[2].toFixed(DIGITS)}</li>`;
 	$tr.find(".color-shown .lch").append(li);
+	var $trCompact = $("#compact_result tbody tr").eq(TOTAL_MATCHING_TRIALS+questionNo);
+	$trCompact.find(".question-no").text(`Memorize ${questionNo+1}`);
+	$trCompact.find(".duration").text(memorizingQuestions[questionNo].duration);
+	$trCompact.find(".color-shown").text(memorizingQuestions[questionNo].lch[2].toFixed(DIGITS));
 	$colorShown.css("backgroundColor", rgb2bgColor(colorWheel.rgb)).show();
 	new Promise(function(resolve) {
 		setTimeout(function() {
 			$colorShown.hide();
 			resolve();
-		}, MEMORIZING_DURATIONS[questionNo]);
+		}, memorizingQuestions[questionNo].duration);
 	}).then(function() {
 		setTimeout(showColorWheel, INTERVAL);
 	});
@@ -159,7 +215,11 @@ function showColorWheel() {
 		<li>C: ${colorWheel.lch[1].toFixed(DIGITS)}</li>
 		<li>h: ${colorWheel.lch[2].toFixed(DIGITS)}</li>`;
 		$tr.find(".color-answered .lch").append(li);
-		$tr.find(".difference").text(colorDiff4lch(memorizingQuestions[questionNo], colorWheel.lch).toFixed(DIGITS));
+		var difference = colorDiff4lch(memorizingQuestions[questionNo].lch, colorWheel.lch).toFixed(DIGITS);
+		$tr.find(".difference").text(difference);
+		var $trCompact = $("#compact_result tbody tr").eq(TOTAL_MATCHING_TRIALS+questionNo);
+		$trCompact.find(".color-answered").text(colorWheel.lch[2].toFixed(DIGITS));
+		$trCompact.find(".difference").text(difference);
 	};
 	if (questionNo+1 >= TOTAL_MEMORIZING_TRIALS) {
 		$("#end").on("click", function() {
@@ -167,16 +227,23 @@ function showColorWheel() {
 				$("#result").fadeIn(DURATION);
 			});
 			updateResult();
-			$("#color_answered, #color_wheel").fadeOut(DURATION);
+			$("#question_no, #color_answered, #color_wheel").fadeOut(DURATION);
 		}).show();
 	} else {
 		$("#next").on("click", function() {
 			$(this).off().fadeOut(DURATION, countdown);
 			updateResult();
 			questionNo++;
-			$("#color_answered, #color_wheel").fadeOut(DURATION);
+			$("#question_no, #color_answered, #color_wheel").fadeOut(DURATION);
 		}).show();
 	}
 	$("#color_answered, #color_wheel").show();
 }
-$(init);
+$(function() {
+	document.addEventListener("touchmove", function(e) {
+		if (e.touches.length > 1) {
+			e.preventDefault();
+		}
+	}, {passive: false});
+	init();
+});

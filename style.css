@@ -62,6 +62,7 @@ html {
 }
 html, body {
 	overflow: hidden;
+	touch-action: none;
 }
 #wrapper {
 	position: relative;
@@ -78,13 +79,28 @@ html, body {
 	font-weight: bold;
 	text-align: center;
 }
-#touch_instruction {
+#participant_no_form {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 3rem;
+}
+#participant_no_form select#participant_no {
+	font-size: 3rem;
+}
+#start {
 	position: absolute;
 	top: 70%;
 	left: 50%;
 	transform: translateX(-50%);
-	font-size: 2rem;
+	cursor: pointer;
+	font-size: 4rem;
+	color: #ffffff;
+	background-color: #333333;
 	text-align: center;
+	border-radius: 10px;
+	padding: 15px 30px;
 }
 #matching_instruction, #memorizing_instruction {
 	position: absolute;
@@ -104,6 +120,7 @@ html, body {
 	font-size: 4rem;
 	color: #ffffff;
 	background-color: #333333;
+	text-align: center;
 	border-radius: 10px;
 	padding: 15px 30px;
 }
@@ -115,6 +132,13 @@ html, body {
 	font-size: 10rem;
 	font-weight: bold;
 	color: #333333;
+}
+#question_no {
+	position: absolute;
+	top: 10%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 3rem;
 }
 .color-square {
 	width: 200px;
@@ -132,7 +156,7 @@ html, body {
 }
 #color_answered {
 	position: absolute;
-	top: 20%;
+	top: 30%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
@@ -146,6 +170,7 @@ html, body {
 	font-size: 4rem;
 	color: #ffffff;
 	background-color: #333333;
+	text-align: center;
 	border-radius: 10px;
 	padding: 15px 30px;
 }
@@ -188,4 +213,17 @@ html, body {
 }
 #result table .color-square {
 	margin: 0 auto;
+}
+#result p#participant_no_result {
+	font-size: 2rem;
+	text-align: center;
+	margin-bottom: 10px;
+}
+#result table#compact_result {
+	height: calc(100% - 2rem - 10px);
+	font-size: 2rem;
+}
+#result table#compact_result th,
+#result table#compact_result td {
+	padding: 5px 10px;
 }
