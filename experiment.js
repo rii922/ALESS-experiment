@@ -249,6 +249,9 @@ $(function() {
 	}, {passive: false});
 	document.addEventListener("dblclick", function(e) {
 		e.preventDefault();
-	});
+	}, {passive: false});
+	document.onselectstart = function() {
+		return false;
+	}
 	init();
 });
