@@ -79,22 +79,24 @@ function init() {
 		$("#participant_no").append(`<option value="${i}">${i}</option>`);
 	}
 	$("#participant_no").change(function() {
-		if ($(this).val() !== "") {
-			participantNo = Number($(this).val());
-			var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
-			console.log(questionColorsLchRotated.length);
-			matchingQuestions = shuffle(questionColorsLchRotated.slice(0, TOTAL_MATCHING_TRIALS));
-			memorizingQuestions = [];
-			for (var i = 0; i < TOTAL_MEMORIZING_TRIALS; i++) {
-				memorizingQuestions.push({
-					lch: questionColorsLchRotated[TOTAL_MATCHING_TRIALS+i],
-					duration: MEMORIZING_DURATIONS[i]
-				});
-			}
-			shuffle(memorizingQuestions);
-			$("#participant_no_result").text(`被験者番号: ${participantNo}`);
+		if ($(this).val() === "") {
+			$("#start").off().fadeOut(DURATION);
+		} else {
 			$("#start").fadeIn(DURATION).on("click", function() {
 				$(this).off();
+				participantNo = Number($(this).val());
+				var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
+				console.log(questionColorsLchRotated.length);
+				matchingQuestions = shuffle(questionColorsLchRotated.slice(0, TOTAL_MATCHING_TRIALS));
+				memorizingQuestions = [];
+				for (var i = 0; i < TOTAL_MEMORIZING_TRIALS; i++) {
+					memorizingQuestions.push({
+						lch: questionColorsLchRotated[TOTAL_MATCHING_TRIALS+i],
+						duration: MEMORIZING_DURATIONS[i]
+					});
+				}
+				shuffle(memorizingQuestions);
+				$("#participant_no_result").text(`被験者番号: ${participantNo}`);
 				$("#title").fadeOut(DURATION, prepareMatching);
 				$("#participant_no_form, #start").fadeOut(DURATION);
 			});
@@ -245,5 +247,8 @@ $(function() {
 			e.preventDefault();
 		}
 	}, {passive: false});
+	document.addEventListener("dblclick", function(e) {
+		e.preventDefault();
+	});
 	init();
 });
