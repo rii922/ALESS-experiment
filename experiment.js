@@ -86,7 +86,6 @@ function init() {
 				$(this).off();
 				participantNo = Number($(this).val());
 				var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
-				console.log(questionColorsLchRotated.length);
 				matchingQuestions = shuffle(questionColorsLchRotated.slice(0, TOTAL_MATCHING_TRIALS));
 				memorizingQuestions = [];
 				for (var i = 0; i < TOTAL_MEMORIZING_TRIALS; i++) {
