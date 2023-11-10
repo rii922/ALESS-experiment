@@ -84,7 +84,7 @@ function init() {
 		} else {
 			$("#start").off().fadeIn(DURATION).on("click", function() {
 				$(this).off();
-				participantNo = Number($(this).val());
+				participantNo = Number($("#participant_no").val());
 				var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
 				matchingQuestions = shuffle(questionColorsLchRotated.slice(0, TOTAL_MATCHING_TRIALS));
 				memorizingQuestions = [];
