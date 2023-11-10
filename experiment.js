@@ -82,7 +82,7 @@ function init() {
 		if ($(this).val() === "") {
 			$("#start").off().fadeOut(DURATION);
 		} else {
-			$("#start").fadeIn(DURATION).on("click", function() {
+			$("#start").off().fadeIn(DURATION).on("click", function() {
 				$(this).off();
 				participantNo = Number($(this).val());
 				var questionColorsLchRotated = QUESTION_COLORS_LCH.slice(participantNo, TOTAL_TRIALS).concat(QUESTION_COLORS_LCH.slice(0, participantNo));
